@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { StateManager } from "@actalk/inkos-core";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { findProjectRoot, log, logError } from "../utils.js";
 
@@ -40,9 +40,7 @@ export const exportCommand = new Command("export")
 
       for (const ch of chapters) {
         const paddedNum = String(ch.number).padStart(4, "0");
-        const files = await import("node:fs/promises").then((fs) =>
-          fs.readdir(chaptersDir),
-        );
+        const files = await readdir(chaptersDir);
         const match = files.find((f) => f.startsWith(paddedNum));
         if (!match) continue;
 

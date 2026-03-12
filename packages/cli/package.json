@@ -1,6 +1,6 @@
 {
   "name": "@actalk/inkos",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "InkOS CLI — multi-agent novel production system",
   "type": "module",
   "bin": {
@@ -16,15 +16,12 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@actalk/inkos-core": "workspace:*",
     "commander": "^13.0.0",
-    "chalk": "^5.4.0",
-    "ora": "^8.2.0",
-    "inquirer": "^12.3.0",
     "dotenv": "^16.4.0"
   },
   "devDependencies": {

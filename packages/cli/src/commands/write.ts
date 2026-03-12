@@ -2,7 +2,7 @@ import { Command } from "commander";
 import { PipelineRunner, StateManager } from "@actalk/inkos-core";
 import { readdir, unlink } from "node:fs/promises";
 import { join } from "node:path";
-import { loadConfig, createClient, findProjectRoot, log, logError } from "../utils.js";
+import { loadConfig, createClient, findProjectRoot, resolveContext, log, logError } from "../utils.js";
 
 export const writeCommand = new Command("write")
   .description("Write chapters");
@@ -12,45 +12,58 @@ writeCommand
   .description("Write the next chapter for a book")
   .argument("<book-id>", "Book ID")
   .option("--count <n>", "Number of chapters to write", "1")
+  .option("--context <text>", "Creative guidance (natural language)")
+  .option("--context-file <path>", "Read guidance from file")
+  .option("--json", "Output JSON")
   .action(async (bookId: string, opts) => {
     try {
       const config = await loadConfig();
       const client = createClient(config);
       const root = findProjectRoot();
+      const context = await resolveContext(opts);
 
       const pipeline = new PipelineRunner({
         client,
         model: config.llm.model,
         projectRoot: root,
         notifyChannels: config.notify,
+        ...(context ? { externalContext: context } : {}),
       });
 
       const count = parseInt(opts.count, 10);
 
+      const results = [];
       for (let i = 0; i < count; i++) {
-        log(`Writing chapter for "${bookId}"...`);
+        if (!opts.json) log(`Writing chapter for "${bookId}"...`);
 
         const result = await pipeline.writeNextChapter(bookId);
+        results.push(result);
 
-        log(`  Chapter ${result.chapterNumber}: ${result.title}`);
-        log(`  Words: ${result.wordCount}`);
-        log(`  Audit: ${result.auditResult.passed ? "PASSED" : "NEEDS REVIEW"}`);
-        if (result.revised) {
-          log("  Auto-revised: YES (critical issues were fixed)");
-        }
-        log(`  Status: ${result.status}`);
-
-        if (result.auditResult.issues.length > 0) {
-          log("  Issues:");
-          for (const issue of result.auditResult.issues) {
-            log(`    [${issue.severity}] ${issue.category}: ${issue.description}`);
+        if (!opts.json) {
+          log(`  Chapter ${result.chapterNumber}: ${result.title}`);
+          log(`  Words: ${result.wordCount}`);
+          log(`  Audit: ${result.auditResult.passed ? "PASSED" : "NEEDS REVIEW"}`);
+          if (result.revised) {
+            log("  Auto-revised: YES (critical issues were fixed)");
           }
-        }
+          log(`  Status: ${result.status}`);
 
-        log("");
+          if (result.auditResult.issues.length > 0) {
+            log("  Issues:");
+            for (const issue of result.auditResult.issues) {
+              log(`    [${issue.severity}] ${issue.category}: ${issue.description}`);
+            }
+          }
+
+          log("");
+        }
       }
 
-      log("Done.");
+      if (opts.json) {
+        log(JSON.stringify(results, null, 2));
+      } else {
+        log("Done.");
+      }
     } catch (e) {
       logError(`Failed to write chapter: ${e}`);
       process.exit(1);

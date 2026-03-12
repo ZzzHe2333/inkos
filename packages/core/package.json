@@ -1,6 +1,6 @@
 {
   "name": "@actalk/inkos-core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "InkOS core: models, agents, pipeline, LLM integration",
   "type": "module",
   "main": "dist/index.js",

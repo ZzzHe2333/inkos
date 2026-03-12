@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { PipelineRunner, StateManager, type BookConfig } from "@actalk/inkos-core";
-import { loadConfig, createClient, findProjectRoot, log, logError } from "../utils.js";
+import { loadConfig, createClient, findProjectRoot, resolveContext, log, logError } from "../utils.js";
 
 export const bookCommand = new Command("book")
   .description("Manage books");
@@ -13,6 +13,8 @@ bookCommand
   .option("--platform <platform>", "Target platform", "tomato")
   .option("--target-chapters <n>", "Target chapter count", "200")
   .option("--chapter-words <n>", "Words per chapter", "3000")
+  .option("--context <text>", "External context / instructions (natural language)")
+  .option("--context-file <path>", "Read external context from file")
   .action(async (opts) => {
     try {
       const config = await loadConfig();
@@ -40,10 +42,13 @@ bookCommand
 
       log(`Creating book "${book.title}" (${book.genre} / ${book.platform})...`);
 
+      const context = await resolveContext(opts);
+
       const pipeline = new PipelineRunner({
         client,
         model: config.llm.model,
         projectRoot: root,
+        ...(context ? { externalContext: context } : {}),
       });
 
       await pipeline.initBook(book);

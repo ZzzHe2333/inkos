@@ -10,8 +10,7 @@ export const radarCommand = new Command("radar")
 radarCommand
   .command("scan")
   .description("Scan market for opportunities")
-  .option("--platforms <platforms>", "Platforms to scan (comma-separated)", "tomato,feilu")
-  .action(async (opts) => {
+  .action(async () => {
     try {
       const config = await loadConfig();
       const client = createClient(config);

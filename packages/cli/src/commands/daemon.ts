@@ -8,8 +8,7 @@ const PID_FILE = "inkos.pid";
 
 export const upCommand = new Command("up")
   .description("Start the InkOS daemon (autonomous mode)")
-  .option("--foreground", "Run in foreground instead of background")
-  .action(async (opts) => {
+  .action(async () => {
     try {
       const config = await loadConfig();
       const client = createLLMClient(config.llm);
