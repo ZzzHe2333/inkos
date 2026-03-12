@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { Scheduler, createLLMClient } from "@inkos/core";
+import { Scheduler, createLLMClient } from "@actalk/inkos-core";
 import { loadConfig, findProjectRoot, log, logError } from "../utils.js";
 import { writeFile, readFile, unlink } from "node:fs/promises";
 import { join } from "node:path";

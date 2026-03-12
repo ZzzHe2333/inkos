@@ -85,34 +85,19 @@ InkOS 为每一章运行多智能体管线：
 ### 安装
 
 ```bash
-git clone https://github.com/Narcooo/inkos.git
-cd inkos
-pnpm install
-pnpm build
+npm i -g @actalk/inkos
 ```
 
 ### 配置
 
 ```bash
-cp .env.example .env
-```
-
-```env
-OPENAI_API_KEY=sk-your-key-here
-OPENAI_BASE_URL=https://api.openai.com/v1   # 或任何兼容端点
-OPENAI_MODEL=gpt-4o
-
-# 可选：通知推送
-TELEGRAM_BOT_TOKEN=
-TELEGRAM_CHAT_ID=
-FEISHU_WEBHOOK_URL=
-WECOM_WEBHOOK_URL=
+inkos init              # 初始化项目，生成 .env 模板
+# 编辑 .env，填入你的 API Key（支持所有 OpenAI 兼容接口）
 ```
 
 ### 使用
 
 ```bash
-inkos init              # 初始化项目
 inkos book create       # 创建新书（交互式，生成世界观+卷纲+文风指南）
 inkos write next        # 写下一章（完整五 agent 管线）
 inkos write rewrite <n> # 重写第 N 章（恢复状态快照后重新生成）

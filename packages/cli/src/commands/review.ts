@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { StateManager } from "@inkos/core";
+import { StateManager } from "@actalk/inkos-core";
 import { findProjectRoot, log, logError } from "../utils.js";
 
 export const reviewCommand = new Command("review")

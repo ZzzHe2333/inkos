@@ -50,7 +50,7 @@ export const doctorCommand = new Command("doctor")
 
     // 5. Check books directory
     try {
-      const { StateManager } = await import("@inkos/core");
+      const { StateManager } = await import("@actalk/inkos-core");
       const state = new StateManager(root);
       const books = await state.listBooks();
       checks.push({

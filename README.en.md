@@ -78,34 +78,19 @@ The Continuity Auditor checks every draft against these files. If a character "r
 ### Install
 
 ```bash
-git clone https://github.com/Narcooo/inkos.git
-cd inkos
-pnpm install
-pnpm build
+npm i -g @actalk/inkos
 ```
 
 ### Configure
 
 ```bash
-cp .env.example .env
-```
-
-```env
-OPENAI_API_KEY=sk-your-key-here
-OPENAI_BASE_URL=https://api.openai.com/v1   # or any compatible endpoint
-OPENAI_MODEL=gpt-4o
-
-# Optional: notifications
-TELEGRAM_BOT_TOKEN=
-TELEGRAM_CHAT_ID=
-FEISHU_WEBHOOK_URL=
-WECOM_WEBHOOK_URL=
+inkos init              # Initialize project, generates .env template
+# Edit .env with your API key (any OpenAI-compatible endpoint)
 ```
 
 ### Create Your First Book
 
 ```bash
-inkos init              # Initialize project
 inkos book create       # Create a new book (interactive)
 inkos write next        # Write next chapter (full agent pipeline)
 inkos review            # Review the latest draft

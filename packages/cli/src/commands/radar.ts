@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { PipelineRunner } from "@inkos/core";
+import { PipelineRunner } from "@actalk/inkos-core";
 import { loadConfig, createClient, findProjectRoot, log, logError } from "../utils.js";
 import { writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";

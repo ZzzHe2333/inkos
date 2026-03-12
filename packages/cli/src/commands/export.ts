@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { StateManager } from "@inkos/core";
+import { StateManager } from "@actalk/inkos-core";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { findProjectRoot, log, logError } from "../utils.js";

@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { config as loadEnv } from "dotenv";
-import { createLLMClient, type ProjectConfig, ProjectConfigSchema } from "@inkos/core";
+import { createLLMClient, type ProjectConfig, ProjectConfigSchema } from "@actalk/inkos-core";
 
 export function findProjectRoot(): string {
   return process.cwd();

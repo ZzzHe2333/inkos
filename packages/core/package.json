@@ -1,5 +1,5 @@
 {
-  "name": "@inkos/core",
+  "name": "@actalk/inkos-core",
   "version": "0.1.0",
   "description": "InkOS core: models, agents, pipeline, LLM integration",
   "type": "module",
@@ -10,6 +10,13 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     }
+  },
+  "files": ["dist"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Narcooo/inkos.git",
+    "directory": "packages/core"
   },
   "scripts": {
     "build": "tsc",

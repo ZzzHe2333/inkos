@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { PipelineRunner, StateManager, type BookConfig } from "@inkos/core";
+import { PipelineRunner, StateManager, type BookConfig } from "@actalk/inkos-core";
 import { loadConfig, createClient, findProjectRoot, log, logError } from "../utils.js";
 
 export const bookCommand = new Command("book")
