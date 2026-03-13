@@ -78,28 +78,29 @@ writeCommand
 
 writeCommand
   .command("rewrite")
-  .description("Re-generate a specific chapter (removes it and writes fresh)")
-  .argument("[book-id]", "Book ID (auto-detected if only one book)")
-  .argument("<chapter>", "Chapter number to rewrite")
+  .description("Re-generate a specific chapter: rewrite [book-id] <chapter>")
+  .argument("<args...>", "Book ID (optional) and chapter number")
   .option("--force", "Skip confirmation prompt")
   .option("--json", "Output JSON")
-  .action(async (bookIdArg: string, chapterStr: string, opts) => {
+  .action(async (args: ReadonlyArray<string>, opts) => {
     try {
       const config = await loadConfig();
       const client = createClient(config);
       const root = findProjectRoot();
-      const chapterNum = parseInt(chapterStr, 10);
 
-      // If only one argument, it's the chapter number (book-id auto-detected)
       let bookId: string;
-      if (!chapterStr || isNaN(chapterNum)) {
-        // bookIdArg is actually the chapter number
+      let chapter: number;
+      if (args.length === 1) {
+        chapter = parseInt(args[0]!, 10);
+        if (isNaN(chapter)) throw new Error(`Expected chapter number, got "${args[0]}"`);
         bookId = await resolveBookId(undefined, root);
-        chapterStr = bookIdArg;
+      } else if (args.length === 2) {
+        chapter = parseInt(args[1]!, 10);
+        if (isNaN(chapter)) throw new Error(`Expected chapter number, got "${args[1]}"`);
+        bookId = await resolveBookId(args[0], root);
       } else {
-        bookId = await resolveBookId(bookIdArg, root);
+        throw new Error("Usage: inkos write rewrite [book-id] <chapter>");
       }
-      const chapter = parseInt(chapterStr, 10);
 
       if (!opts.force) {
         const rl = createInterface({ input: process.stdin, output: process.stdout });

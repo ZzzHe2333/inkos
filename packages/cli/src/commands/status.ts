@@ -15,13 +15,9 @@ export const statusCommand = new Command("status")
       const bookIds = bookIdArg ? [bookIdArg] : allBookIds;
 
       if (bookIdArg && !allBookIds.includes(bookIdArg)) {
-        const msg = `Book "${bookIdArg}" not found. Available: ${allBookIds.join(", ") || "(none)"}`;
-        if (opts.json) {
-          log(JSON.stringify({ error: msg }));
-        } else {
-          logError(msg);
-        }
-        process.exit(1);
+        throw new Error(
+          `Book "${bookIdArg}" not found. Available: ${allBookIds.join(", ") || "(none)"}`,
+        );
       }
 
       const booksData = [];

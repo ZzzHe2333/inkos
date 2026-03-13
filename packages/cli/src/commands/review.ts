@@ -78,37 +78,46 @@ reviewCommand
     }
   });
 
+/**
+ * Parse "[book-id] <chapter>" style arguments from variadic args.
+ * Supports: "3" (auto-detect book) or "my-book 3"
+ */
+function parseBookAndChapter(
+  args: ReadonlyArray<string>,
+): { readonly bookIdArg: string | undefined; readonly chapterNum: number } {
+  if (args.length === 1) {
+    const num = parseInt(args[0]!, 10);
+    if (isNaN(num)) {
+      throw new Error(`Expected chapter number, got "${args[0]}"`);
+    }
+    return { bookIdArg: undefined, chapterNum: num };
+  }
+  if (args.length === 2) {
+    const num = parseInt(args[1]!, 10);
+    if (isNaN(num)) {
+      throw new Error(`Expected chapter number as second argument, got "${args[1]}"`);
+    }
+    return { bookIdArg: args[0], chapterNum: num };
+  }
+  throw new Error("Usage: inkos review approve [book-id] <chapter>");
+}
+
 reviewCommand
   .command("approve")
-  .description("Approve a chapter")
-  .argument("[book-id]", "Book ID (auto-detected if only one book)")
-  .argument("<chapter>", "Chapter number")
+  .description("Approve a chapter: approve [book-id] <chapter>")
+  .argument("<args...>", "Book ID (optional) and chapter number")
   .option("--json", "Output JSON")
-  .action(async (bookIdArg: string, chapterStr: string, opts) => {
+  .action(async (args: ReadonlyArray<string>, opts) => {
     try {
       const root = findProjectRoot();
-
-      let bookId: string;
-      let chapterNum: number;
-      if (!chapterStr || isNaN(parseInt(chapterStr, 10))) {
-        bookId = await resolveBookId(undefined, root);
-        chapterNum = parseInt(bookIdArg, 10);
-      } else {
-        bookId = await resolveBookId(bookIdArg, root);
-        chapterNum = parseInt(chapterStr, 10);
-      }
+      const { bookIdArg, chapterNum } = parseBookAndChapter(args);
+      const bookId = await resolveBookId(bookIdArg, root);
 
       const state = new StateManager(root);
       const index = [...(await state.loadChapterIndex(bookId))];
       const idx = index.findIndex((ch) => ch.number === chapterNum);
       if (idx === -1) {
-        const msg = `Chapter ${chapterNum} not found in "${bookId}"`;
-        if (opts.json) {
-          log(JSON.stringify({ error: msg }));
-        } else {
-          logError(msg);
-        }
-        process.exit(1);
+        throw new Error(`Chapter ${chapterNum} not found in "${bookId}"`);
       }
 
       index[idx] = {
@@ -175,36 +184,21 @@ reviewCommand
 
 reviewCommand
   .command("reject")
-  .description("Reject a chapter")
-  .argument("[book-id]", "Book ID (auto-detected if only one book)")
-  .argument("<chapter>", "Chapter number")
+  .description("Reject a chapter: reject [book-id] <chapter>")
+  .argument("<args...>", "Book ID (optional) and chapter number")
   .option("--reason <reason>", "Rejection reason")
   .option("--json", "Output JSON")
-  .action(async (bookIdArg: string, chapterStr: string, opts) => {
+  .action(async (args: ReadonlyArray<string>, opts) => {
     try {
       const root = findProjectRoot();
-
-      let bookId: string;
-      let chapterNum: number;
-      if (!chapterStr || isNaN(parseInt(chapterStr, 10))) {
-        bookId = await resolveBookId(undefined, root);
-        chapterNum = parseInt(bookIdArg, 10);
-      } else {
-        bookId = await resolveBookId(bookIdArg, root);
-        chapterNum = parseInt(chapterStr, 10);
-      }
+      const { bookIdArg, chapterNum } = parseBookAndChapter(args);
+      const bookId = await resolveBookId(bookIdArg, root);
 
       const state = new StateManager(root);
       const index = [...(await state.loadChapterIndex(bookId))];
       const idx = index.findIndex((ch) => ch.number === chapterNum);
       if (idx === -1) {
-        const msg = `Chapter ${chapterNum} not found in "${bookId}"`;
-        if (opts.json) {
-          log(JSON.stringify({ error: msg }));
-        } else {
-          logError(msg);
-        }
-        process.exit(1);
+        throw new Error(`Chapter ${chapterNum} not found in "${bookId}"`);
       }
 
       index[idx] = {

@@ -27,13 +27,7 @@ export const exportCommand = new Command("export")
         : index;
 
       if (chapters.length === 0) {
-        const msg = "No chapters to export.";
-        if (opts.json) {
-          log(JSON.stringify({ error: msg }));
-        } else {
-          logError(msg);
-        }
-        process.exit(1);
+        throw new Error("No chapters to export.");
       }
 
       const parts: string[] = [];
