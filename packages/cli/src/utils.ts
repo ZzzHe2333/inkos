@@ -65,7 +65,7 @@ export async function loadConfig(): Promise<ProjectConfig> {
     return ProjectConfigSchema.parse(config);
   } catch (e) {
     throw new Error(
-      `Failed to load inkos.json from ${root}. Run 'inkos init' first.`,
+      `inkos.json not found in ${root}.\nMake sure you are inside an InkOS project directory (cd into the project created by 'inkos init').`,
     );
   }
 }
