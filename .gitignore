@@ -7,8 +7,3 @@ dist/
 .DS_Store
 coverage/
 .turbo/
-SKILL.txt
-skill.md.txt
-文本来源.txt
-article-linuxdo.md
-linuxdo-*.md
