@@ -20,19 +20,41 @@ export const NotifyChannelSchema = z.discriminatedUnion("type", [
     botToken: z.string().min(1),
     chatId: z.string().min(1),
   }),
+  // 企业微信
   z.object({
     type: z.literal("wechat-work"),
     webhookUrl: z.string().url(),
   }),
+  // 飞书
   z.object({
     type: z.literal("feishu"),
     webhookUrl: z.string().url(),
   }),
+  // webhook
   z.object({
     type: z.literal("webhook"),
     url: z.string().url(),
     secret: z.string().optional(),
     events: z.array(z.string()).default([]),
+  }),
+  // NEW: Server酱
+  z.object({
+    type: z.literal("serverchan"),
+    sendUrl: z.string().url(),
+  }),
+
+  // NEW: Bark
+  z.object({
+    type: z.literal("bark"),
+    serverUrl: z.string().url().default("https://api.day.app"),
+    deviceKey: z.string().min(1),
+    group: z.string().optional(),
+    url: z.string().optional(),
+    sound: z.string().optional(),
+    icon: z.string().url().optional(),
+    level: z
+      .enum(["active", "timeSensitive", "passive", "critical"])
+      .optional(),
   }),
 ]);
 
