@@ -6,7 +6,6 @@ import { sendWebhook, type WebhookPayload } from "./webhook.js";
 import { sendServerChan } from "./serverchan.js";
 import { sendBark } from "./bark.js";
 
-
 export interface NotifyMessage {
   readonly title: string;
   readonly body: string;
@@ -44,8 +43,14 @@ export async function dispatchNotification(
           break;
 
         case "webhook":
+          // Webhook channels are handled by dispatchWebhookEvent for structured events.
+          // For generic text notifications, send as a pipeline-complete event.
           await sendWebhook(
-            { url: channel.url, secret: channel.secret, events: channel.events },
+            {
+              url: channel.url,
+              secret: channel.secret,
+              events: channel.events,
+            },
             {
               event: "pipeline-complete",
               bookId: "",
@@ -83,12 +88,14 @@ export async function dispatchNotification(
           break;
       }
     } catch (e) {
+      // Log but don't throw — notification failure shouldn't block pipeline
       process.stderr.write(`[notify] ${channel.type} failed: ${e}\n`);
     }
   });
 
   await Promise.all(tasks);
 }
+
 /** Dispatch a structured webhook event to all webhook channels. */
 export async function dispatchWebhookEvent(
   channels: ReadonlyArray<NotifyChannel>,
