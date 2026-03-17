@@ -29,12 +29,15 @@ export async function sendBark(
 
   const response = await fetch(`${serverUrl}/push`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+    },
     body: JSON.stringify(payload),
   });
 
+  const text = await response.text();
+
   if (!response.ok) {
-    const text = await response.text();
     throw new Error(`Bark send failed: ${response.status} ${text}`);
   }
 }
